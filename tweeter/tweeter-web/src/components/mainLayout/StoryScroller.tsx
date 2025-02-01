@@ -4,12 +4,12 @@ import { AuthToken, FakeData, Status, User } from "tweeter-shared";
 import { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Link } from "react-router-dom";
-import Post from "./Post";
+import Post from "../statusItem/Post";
 import useToastListener from "../toaster/ToastListenerHook";
 
 export const PAGE_SIZE = 10;
 
-const StatusItem = () => {
+const StoryScroller = () => {
   const { displayErrorMessage } = useToastListener();
   const [items, setItems] = useState<Status[]>([]);
   const [newItems, setNewItems] = useState<Status[]>([]);
@@ -17,7 +17,8 @@ const StatusItem = () => {
   const [lastItem, setLastItem] = useState<Status | null>(null);
   const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
 
-  const addItems = (newItems: Status[]) => setNewItems(newItems);
+  const addItems = (newItems: Status[]) =>
+    setNewItems(newItems);
 
   const { displayedUser, setDisplayedUser, currentUser, authToken } =
     useContext(UserInfoContext);
@@ -29,17 +30,17 @@ const StatusItem = () => {
 
   // Load initial items whenever the displayed user changes. Done in a separate useEffect hook so the changes from reset will be visible.
   useEffect(() => {
-    if (changedDisplayedUser) {
+    if(changedDisplayedUser) {
       loadMoreItems();
     }
   }, [changedDisplayedUser]);
 
   // Add new items whenever there are new items to add
   useEffect(() => {
-    if (newItems) {
+    if(newItems) {
       setItems([...items, ...newItems]);
     }
-  }, [newItems]);
+  }, [newItems])
 
   const reset = async () => {
     setItems([]);
@@ -47,11 +48,11 @@ const StatusItem = () => {
     setLastItem(null);
     setHasMoreItems(true);
     setChangedDisplayedUser(true);
-  };
+  }
 
   const loadMoreItems = async () => {
     try {
-      const [newItems, hasMore] = await loadMoreStatusItems(
+      const [newItems, hasMore] = await loadMoreStoryItems(
         authToken!,
         displayedUser!.alias,
         PAGE_SIZE,
@@ -61,15 +62,15 @@ const StatusItem = () => {
       setHasMoreItems(hasMore);
       setLastItem(newItems[newItems.length - 1]);
       addItems(newItems);
-      setChangedDisplayedUser(false);
+      setChangedDisplayedUser(false)
     } catch (error) {
       displayErrorMessage(
-        `Failed to load feed items because of exception: ${error}`
+        `Failed to load story items because of exception: ${error}`
       );
     }
   };
 
-  const loadMoreStatusItems = async (
+  const loadMoreStoryItems = async (
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
@@ -78,7 +79,6 @@ const StatusItem = () => {
     // TODO: Replace with the result of calling server
     return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
   };
-
   const navigateToUser = async (event: React.MouseEvent): Promise<void> => {
     event.preventDefault();
 
@@ -164,4 +164,4 @@ const StatusItem = () => {
   );
 };
 
-export default StatusItem;
+export default StoryScroller;
