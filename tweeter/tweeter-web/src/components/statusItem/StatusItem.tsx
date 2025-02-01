@@ -1,17 +1,15 @@
 import { Link } from "react-router-dom";
 import Post from "./Post";
-import { UserInfoContext } from "../userInfo/UserInfoProvider";
-import { useContext } from "react";
 import { AuthToken, FakeData, Status, User } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
+import useUserInfo from "../userInfo/UserInfoHook";
 
 interface StatusItemInterface {
   item: Status;
 }
 
 const StatusItem = ({ item }: StatusItemInterface) => {
-  const { setDisplayedUser, currentUser, authToken } =
-    useContext(UserInfoContext);
+  const { setDisplayedUser, currentUser, authToken } = useUserInfo();
 
   const { displayErrorMessage } = useToastListener();
 
