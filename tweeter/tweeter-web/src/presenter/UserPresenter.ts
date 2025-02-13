@@ -1,6 +1,5 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
-import useUserInfo from "../components/userInfo/UserInfoHook";
 
 export interface UserView {
   displayErrorMessage: (
