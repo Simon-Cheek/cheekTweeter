@@ -17,6 +17,9 @@ import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
 import { FolloweePresenter } from "./presenter/FolloweePresenter";
 import { UserItemView } from "./presenter/UserItemPresenter";
 import { FollowerPresenter } from "./presenter/FollowerPresenter";
+import { StoryPresenter } from "./presenter/StoryPresenter";
+import { StatusItemView } from "./presenter/StatusItemPresenter";
+import { FeedPresenter } from "./presenter/FeedPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
@@ -40,25 +43,25 @@ const App = () => {
 };
 
 const AuthenticatedRoutes = () => {
-  const loadMoreFeedItems = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
+  // const loadMoreFeedItems = async (
+  //   authToken: AuthToken,
+  //   userAlias: string,
+  //   pageSize: number,
+  //   lastItem: Status | null
+  // ): Promise<[Status[], boolean]> => {
+  //   // TODO: Replace with the result of calling server
+  //   return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+  // };
 
-  const loadMoreStoryItems = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
+  // const loadMoreStoryItems = async (
+  //   authToken: AuthToken,
+  //   userAlias: string,
+  //   pageSize: number,
+  //   lastItem: Status | null
+  // ): Promise<[Status[], boolean]> => {
+  //   // TODO: Replace with the result of calling server
+  //   return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+  // };
 
   return (
     <Routes>
@@ -68,8 +71,9 @@ const AuthenticatedRoutes = () => {
           path="feed"
           element={
             <StatusItemScroller
-              loadMoreParentItems={loadMoreFeedItems}
-              errorMessage="Failed to load feed items because of exception: "
+              presenterGenerator={(view: StatusItemView) =>
+                new FeedPresenter(view)
+              }
             />
           }
         />
@@ -77,8 +81,9 @@ const AuthenticatedRoutes = () => {
           path="story"
           element={
             <StatusItemScroller
-              loadMoreParentItems={loadMoreStoryItems}
-              errorMessage="Failed to load story items because of exception: "
+              presenterGenerator={(view: StatusItemView) =>
+                new StoryPresenter(view)
+              }
             />
           }
         />
