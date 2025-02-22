@@ -2,7 +2,6 @@ import { AuthToken, Status, User } from "tweeter-shared";
 import { PagedPresenter, PagedView } from "./PagedPresenter";
 import { StatusService } from "../model/service/StatusService";
 
-export interface StatusItemView extends PagedView<Status> {}
 export abstract class StatusItemPresenter extends PagedPresenter<
   Status,
   StatusService
