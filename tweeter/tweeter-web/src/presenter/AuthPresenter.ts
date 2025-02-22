@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
 import { NavigateFunction } from "react-router-dom";
 import { AuthToken, User } from "tweeter-shared";
+import { Presenter, View } from "./Presenter";
 
-export interface AuthView {
+export interface AuthView extends View {
   updateUserInfo: (
     currentUser: User,
     displayedUser: User | null,
@@ -10,7 +11,6 @@ export interface AuthView {
     remember: boolean
   ) => void;
   navigate: NavigateFunction;
-  displayErrorMessage: (message: string) => void;
   firstName?: string;
   lastName?: string;
   setFirstName?: Dispatch<SetStateAction<string>>;
@@ -25,14 +25,8 @@ export interface AuthView {
   setImageBytes?: Dispatch<SetStateAction<Uint8Array>>;
 }
 
-export abstract class AuthPresenter {
-  private _view: AuthView;
-
+export abstract class AuthPresenter extends Presenter<AuthView> {
   protected constructor(view: AuthView) {
-    this._view = view;
-  }
-
-  public get view() {
-    return this._view;
+    super(view);
   }
 }

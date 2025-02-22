@@ -1,43 +1,11 @@
 import { AuthToken, User } from "tweeter-shared";
+import { View } from "./Presenter";
+import { PagedPresenter, PagedView } from "./PagedPresenter";
 
-export interface UserItemView {
-  addItems: (newItems: User[]) => void;
-  displayErrorMessage: (message: string) => void;
-}
+export interface UserItemView extends PagedView<User> {}
 
-export abstract class UserItemPresenter {
-  private _hasMoreItems = true;
-  private _lastItem: User | null = null;
-  private _view: UserItemView;
-
-  reset() {
-    this.lastItem = null;
-    this.hasMoreItems = true;
-  }
-
-  protected constructor(view: UserItemView) {
-    this._view = view;
-  }
-
-  protected get view() {
-    return this._view;
-  }
-
-  protected get lastItem() {
-    return this._lastItem;
-  }
-
-  protected set lastItem(lastItem: User | null) {
-    this._lastItem = lastItem;
-  }
-
-  public get hasMoreItems() {
-    return this._hasMoreItems;
-  }
-
-  protected set hasMoreItems(hasMoreItems: boolean) {
-    this._hasMoreItems = hasMoreItems;
-  }
-
-  public abstract loadMoreItems(authToken: AuthToken, userAlias: string): void;
+export abstract class UserItemPresenter extends PagedPresenter<User> {
+  // protected constructor(view: UserItemView) {
+  //   super(view);
+  // }
 }

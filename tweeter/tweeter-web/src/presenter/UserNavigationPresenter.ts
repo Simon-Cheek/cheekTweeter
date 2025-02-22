@@ -1,21 +1,18 @@
 import { AuthToken, User } from "tweeter-shared";
-import { StatusService } from "../model/service/StatusService";
-import { StatusItemPresenter, StatusItemView } from "./StatusItemPresenter";
 import { UserService } from "../model/service/UserService";
+import { Presenter, View } from "./Presenter";
 
-export interface UserNavigationView {
+export interface UserNavigationView extends View {
   setDisplayedUser: (user: User) => void;
   currentUser: User | null;
   authToken: AuthToken | null;
-  displayErrorMessage: (message: string, bootstrapClasses?: string) => void;
 }
-export class UserNavigationPresenter {
+export class UserNavigationPresenter extends Presenter<UserNavigationView> {
   private userService: UserService;
-  private userNavView: UserNavigationView;
 
   public constructor(view: UserNavigationView) {
+    super(view);
     this.userService = new UserService();
-    this.userNavView = view;
   }
 
   public navigateToUser = async (event: React.MouseEvent): Promise<void> => {
@@ -24,17 +21,17 @@ export class UserNavigationPresenter {
     try {
       const alias = this.extractAlias(event.target.toString());
 
-      const user = await this.getUser(this.userNavView.authToken!, alias);
+      const user = await this.getUser(this.view.authToken!, alias);
 
       if (!!user) {
-        if (this.userNavView.currentUser!.equals(user)) {
-          this.userNavView.setDisplayedUser(this.userNavView.currentUser!);
+        if (this.view.currentUser!.equals(user)) {
+          this.view.setDisplayedUser(this.view.currentUser!);
         } else {
-          this.userNavView.setDisplayedUser(user);
+          this.view.setDisplayedUser(user);
         }
       }
     } catch (error) {
-      this.userNavView.displayErrorMessage(
+      this.view.displayErrorMessage(
         `Failed to get user because of exception: ${error}`
       );
     }
