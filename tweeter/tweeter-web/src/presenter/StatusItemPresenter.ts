@@ -1,5 +1,4 @@
 import { AuthToken, Status, User } from "tweeter-shared";
-import { Presenter, View } from "./Presenter";
 import { PagedPresenter, PagedView } from "./PagedPresenter";
 import { StatusService } from "../model/service/StatusService";
 

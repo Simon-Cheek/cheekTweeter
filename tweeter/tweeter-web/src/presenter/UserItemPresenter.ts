@@ -1,7 +1,5 @@
-import { AuthToken, User } from "tweeter-shared";
-import { View } from "./Presenter";
+import { User } from "tweeter-shared";
 import { PagedPresenter, PagedView } from "./PagedPresenter";
-import { UserService } from "../model/service/UserService";
 import { FollowService } from "../model/service/FollowService";
 
 export interface UserItemView extends PagedView<User> {}
