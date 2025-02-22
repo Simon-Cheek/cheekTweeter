@@ -9,26 +9,41 @@ import useUserInfo from "../../userInfo/UserInfoHook";
 import { RegisterPresenter } from "../../../presenter/RegisterPresenter";
 
 const Register = () => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [alias, setAlias] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [imageFileExtension, setImageFileExtension] = useState("");
+  const [imageBytes, setImageBytes] = useState<Uint8Array>(new Uint8Array());
 
   const navigate = useNavigate();
   const { updateUserInfo } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
 
   const listener = {
-    navigate: navigate,
-    updateUserInfo: updateUserInfo,
-    displayErrorMessage: displayErrorMessage,
+    navigate,
+    updateUserInfo,
+    displayErrorMessage,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    imageUrl,
+    setImageUrl,
+    imageFileExtension,
+    setImageFileExtension,
+    isLoading,
+    setIsLoading,
+    imageBytes,
+    setImageBytes,
   };
   const [presenter] = useState(new RegisterPresenter(listener));
 
   const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (
-      event.key == "Enter" &&
-      !presenter.checkSubmitButtonStatus(alias, password)
-    ) {
+    if (event.key == "Enter" && !checkSubmitButtonStatus()) {
       presenter.doRegister(alias, password, rememberMe);
     }
   };
@@ -36,6 +51,17 @@ const Register = () => {
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     presenter.handleImageFile(file);
+  };
+
+  const checkSubmitButtonStatus = (): boolean => {
+    return (
+      !firstName ||
+      !lastName ||
+      !alias ||
+      !password ||
+      !imageUrl ||
+      !imageFileExtension
+    );
   };
 
   const inputFieldGenerator = () => {
@@ -50,7 +76,7 @@ const Register = () => {
             placeholder="First Name"
             onKeyDown={registerOnEnter}
             onChange={(event) => {
-              presenter.firstName = event.target.value;
+              setFirstName(event.target.value);
             }}
           />
           <label htmlFor="firstNameInput">First Name</label>
@@ -64,7 +90,7 @@ const Register = () => {
             placeholder="Last Name"
             onKeyDown={registerOnEnter}
             onChange={(event) => {
-              presenter.lastName = event.target.value;
+              setLastName(event.target.value);
             }}
           />
           <label htmlFor="lastNameInput">Last Name</label>
@@ -83,7 +109,7 @@ const Register = () => {
             onChange={handleFileChange}
           />
           <label htmlFor="imageFileInput">User Image</label>
-          <img src={presenter.imageUrl} className="img-thumbnail" alt=""></img>
+          <img src={imageUrl} className="img-thumbnail" alt=""></img>
         </div>
       </>
     );
@@ -105,10 +131,8 @@ const Register = () => {
       inputFieldGenerator={inputFieldGenerator}
       switchAuthenticationMethodGenerator={switchAuthenticationMethodGenerator}
       setRememberMe={setRememberMe}
-      submitButtonDisabled={() =>
-        presenter.checkSubmitButtonStatus(alias, password)
-      }
-      isLoading={presenter.isLoading}
+      submitButtonDisabled={checkSubmitButtonStatus}
+      isLoading={isLoading}
       submit={async () => presenter.doRegister(alias, password, rememberMe)}
     />
   );

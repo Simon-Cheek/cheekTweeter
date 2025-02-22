@@ -9,10 +9,6 @@ export class LoginPresenter extends AuthPresenter {
     this.userService = new UserService();
   }
 
-  public checkSubmitButtonStatus(alias: string, password: string): boolean {
-    return !alias || !password;
-  }
-
   public async doLogin(
     alias: string,
     password: string,
@@ -20,7 +16,7 @@ export class LoginPresenter extends AuthPresenter {
     originalUrl: string
   ) {
     try {
-      this.isLoading = true;
+      this.view.setIsLoading(true);
 
       const [user, authToken] = await this.userService.login(alias, password);
 
@@ -36,7 +32,7 @@ export class LoginPresenter extends AuthPresenter {
         `Failed to log user in because of exception: ${error}`
       );
     } finally {
-      this.isLoading = false;
+      this.view.setIsLoading(false);
     }
   }
 }

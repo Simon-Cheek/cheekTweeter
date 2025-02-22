@@ -16,6 +16,7 @@ const Login = (props: Props) => {
   const [alias, setAlias] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const { updateUserInfo } = useUserInfo();
@@ -25,14 +26,17 @@ const Login = (props: Props) => {
     navigate: navigate,
     updateUserInfo: updateUserInfo,
     displayErrorMessage: displayErrorMessage,
+    isLoading,
+    setIsLoading,
   };
   const [presenter] = useState(new LoginPresenter(listener));
 
+  const checkSubmitButtonStatus = (): boolean => {
+    return !alias || !password;
+  };
+
   const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (
-      event.key == "Enter" &&
-      !presenter.checkSubmitButtonStatus(alias, password)
-    ) {
+    if (event.key == "Enter" && !checkSubmitButtonStatus()) {
       presenter.doLogin(alias, password, rememberMe, props.originalUrl || "");
     }
   };
@@ -63,10 +67,8 @@ const Login = (props: Props) => {
       inputFieldGenerator={inputFieldGenerator}
       switchAuthenticationMethodGenerator={switchAuthenticationMethodGenerator}
       setRememberMe={setRememberMe}
-      submitButtonDisabled={() =>
-        presenter.checkSubmitButtonStatus(alias, password)
-      }
-      isLoading={presenter.isLoading}
+      submitButtonDisabled={() => checkSubmitButtonStatus()}
+      isLoading={isLoading}
       submit={() =>
         presenter.doLogin(alias, password, rememberMe, props.originalUrl || "")
       }
