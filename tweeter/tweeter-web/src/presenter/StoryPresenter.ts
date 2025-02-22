@@ -4,16 +4,13 @@ import { StatusItemPresenter, StatusItemView } from "./StatusItemPresenter";
 
 export const PAGE_SIZE = 10;
 export class StoryPresenter extends StatusItemPresenter {
-  private statusService: StatusService;
-
   public constructor(view: StatusItemView) {
     super(view);
-    this.statusService = new StatusService();
   }
 
   public async loadMoreItems(authToken: AuthToken, userAlias: string) {
     this.doFailureReportingOperation(async () => {
-      const [newItems, hasMore] = await this.statusService.loadMoreStoryItems(
+      const [newItems, hasMore] = await this.service.loadMoreStoryItems(
         authToken!,
         userAlias,
         PAGE_SIZE,
