@@ -1,6 +1,5 @@
 import { Buffer } from "buffer";
-import { UserService } from "../model/service/UserService";
-import { AuthPresenter, AuthView } from "./AuthPresenter";
+import { AuthPresenter } from "./AuthPresenter";
 
 export class RegisterPresenter extends AuthPresenter {
   private getFileExtension(file: File): string | undefined {
