@@ -27,6 +27,6 @@ export class LoginPresenter extends AuthPresenter {
     rememberMe: boolean,
     originalUrl: string
   ) {
-    this.doAuthenticate(alias, password, rememberMe);
+    this.doAuthenticate(alias, password, rememberMe, originalUrl);
   }
 }

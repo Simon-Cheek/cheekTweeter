@@ -43,14 +43,15 @@ export abstract class AuthPresenter extends Presenter<AuthView> {
   protected async doAuthenticate(
     alias: string,
     password: string,
-    rememberMe: boolean
+    rememberMe: boolean,
+    originalUrl?: string
   ) {
     this.doFailureReportFinallyOp(
       async () => {
         this.view.setIsLoading(true);
         const [user, authToken] = await this.handleAuth(alias, password);
         this.view.updateUserInfo(user, user, authToken, rememberMe);
-        this.handleNavigation();
+        this.handleNavigation(originalUrl);
       },
       this.getActionDesc(),
       () => {

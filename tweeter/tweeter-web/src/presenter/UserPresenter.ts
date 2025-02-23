@@ -73,24 +73,27 @@ export class UserPresenter extends Presenter<UserView> {
     }, "determine follower status");
   }
 
-  public async followDisplayedUser(event: React.MouseEvent): Promise<void> {
-    event.preventDefault();
+  private actOnDisplayedUser(
+    action: (auth: AuthToken, user: User) => Promise<[number, number]>,
+    isFollower: boolean,
+    actionDesc: string
+  ) {
     this.doFailureReportFinallyOp(
       async () => {
         this.isLoading = true;
         this.view.displayInfoMessage(
-          `Following ${this.view.displayedUser!.name}...`,
+          `${actionDesc}ing ${this.view.displayedUser!.name}...`,
           0
         );
-        const [followerCount, followeeCount] = await this.service.follow(
+        const [followerCount, followeeCount] = await action(
           this.view.authToken!,
           this.view.displayedUser!
         );
-        this.isFollower = true;
+        this.isFollower = isFollower;
         this.followerCount = followerCount;
         this.followeeCount = followeeCount;
       },
-      "follow user",
+      `${actionDesc} user`,
       () => {
         this.view.clearLastInfoMessage();
         this.isLoading = false;
@@ -98,29 +101,31 @@ export class UserPresenter extends Presenter<UserView> {
     );
   }
 
-  public async unfollowDisplayedUser(event: React.MouseEvent): Promise<void> {
+  public async followDisplayedUser(event: React.MouseEvent): Promise<void> {
     event.preventDefault();
-
-    this.doFailureReportFinallyOp(
+    this.actOnDisplayedUser(
       async () => {
-        this.isLoading = true;
-        this.view.displayInfoMessage(
-          `Unfollowing ${this.view.displayedUser!.name}...`,
-          0
-        );
-        const [followerCount, followeeCount] = await this.service.unfollow(
+        return this.service.follow(
           this.view.authToken!,
           this.view.displayedUser!
         );
-        this.isFollower = false;
-        this.followerCount = followerCount;
-        this.followeeCount = followeeCount;
       },
-      "unfollow user",
-      () => {
-        this.view.clearLastInfoMessage();
-        this.isLoading = false;
-      }
+      true,
+      "follow"
+    );
+  }
+
+  public async unfollowDisplayedUser(event: React.MouseEvent): Promise<void> {
+    event.preventDefault();
+    this.actOnDisplayedUser(
+      async () => {
+        return this.service.unfollow(
+          this.view.authToken!,
+          this.view.displayedUser!
+        );
+      },
+      false,
+      "unfollow"
     );
   }
 

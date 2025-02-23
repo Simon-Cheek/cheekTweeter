@@ -50,8 +50,6 @@ export abstract class PagedPresenter<T, U> extends Presenter<PagedView<T>> {
       const [newItems, hasMore] = await this.getMoreItems(
         authToken!,
         userAlias
-        // PAGE_SIZE,
-        // this.lastItem
       );
 
       this.hasMoreItems = hasMore;
