@@ -30,27 +30,25 @@ export class PostStatusPresenter extends Presenter<PostStatusView> {
   }
 
   public async submitPost() {
-    try {
-      this.isLoading = true;
-      this.view.displayInfoMessage("Posting status...", 0);
+    this.doFailureReportFinallyOp(
+      async () => {
+        this.isLoading = true;
+        this.view.displayInfoMessage("Posting status...", 0);
 
-      const status = new Status(
-        this.view.post,
-        this.view.currentUser!,
-        Date.now()
-      );
-
-      await this.service.postStatus(this.view.authToken!, status);
-
-      this.view.setPost("");
-      this.view.displayInfoMessage("Status posted!", 2000);
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to post the status because of exception: ${error}`
-      );
-    } finally {
-      this.view.clearLastInfoMessage();
-      this.isLoading = false;
-    }
+        const status = new Status(
+          this.view.post,
+          this.view.currentUser!,
+          Date.now()
+        );
+        await this.service.postStatus(this.view.authToken!, status);
+        this.view.setPost("");
+        this.view.displayInfoMessage("Status posted!", 2000);
+      },
+      "post the status",
+      () => {
+        this.view.clearLastInfoMessage();
+        this.isLoading = false;
+      }
+    );
   }
 }

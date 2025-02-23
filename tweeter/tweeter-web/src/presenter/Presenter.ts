@@ -20,8 +20,24 @@ export class Presenter<T extends View> {
       await operation();
     } catch (error) {
       this.view.displayErrorMessage(
-        `Failed to load ${operationDesc} because of exception: ${error}`
+        `Failed to ${operationDesc} because of exception: ${error}`
       );
+    }
+  }
+
+  protected async doFailureReportFinallyOp(
+    operation: () => Promise<void>,
+    operationDesc: string,
+    finalOperation: () => void
+  ) {
+    try {
+      await operation();
+    } catch (error) {
+      this.view.displayErrorMessage(
+        `Failed to ${operationDesc} because of exception: ${error}`
+      );
+    } finally {
+      finalOperation();
     }
   }
 }

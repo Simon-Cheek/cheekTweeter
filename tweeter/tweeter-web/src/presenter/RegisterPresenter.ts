@@ -3,13 +3,6 @@ import { UserService } from "../model/service/UserService";
 import { AuthPresenter, AuthView } from "./AuthPresenter";
 
 export class RegisterPresenter extends AuthPresenter {
-  private userService: UserService;
-
-  public constructor(view: AuthView) {
-    super(view);
-    this.userService = new UserService();
-  }
-
   private getFileExtension(file: File): string | undefined {
     return file.name.split(".").pop();
   }
@@ -46,31 +39,30 @@ export class RegisterPresenter extends AuthPresenter {
     }
   }
 
+  protected async handleAuth(alias: string, password: string) {
+    return this.userService.register(
+      this.view.firstName!,
+      this.view.lastName!,
+      alias,
+      password,
+      this.view.imageBytes!,
+      this.view.imageFileExtension!
+    );
+  }
+
+  protected handleNavigation(): void {
+    this.view.navigate("/");
+  }
+
+  protected getActionDesc() {
+    return "register user";
+  }
+
   public async doRegister(
     alias: string,
     password: string,
     rememberMe: boolean
   ) {
-    try {
-      this.view.setIsLoading(true);
-
-      const [user, authToken] = await this.userService.register(
-        this.view.firstName!,
-        this.view.lastName!,
-        alias,
-        password,
-        this.view.imageBytes!,
-        this.view.imageFileExtension!
-      );
-
-      this.view.updateUserInfo(user, user, authToken, rememberMe);
-      this.view.navigate("/");
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to register user because of exception: ${error}`
-      );
-    } finally {
-      this.view.setIsLoading(false);
-    }
+    this.doAuthenticate(alias, password, rememberMe);
   }
 }

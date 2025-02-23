@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { NavigateFunction } from "react-router-dom";
 import { AuthToken, User } from "tweeter-shared";
 import { Presenter, View } from "./Presenter";
+import { UserService } from "../model/service/UserService";
 
 export interface AuthView extends View {
   updateUserInfo: (
@@ -26,7 +27,35 @@ export interface AuthView extends View {
 }
 
 export abstract class AuthPresenter extends Presenter<AuthView> {
-  protected constructor(view: AuthView) {
+  protected userService: UserService;
+  public constructor(view: AuthView) {
     super(view);
+    this.userService = new UserService();
+  }
+
+  protected abstract handleAuth(
+    alias: string,
+    password: string
+  ): Promise<[User, AuthToken]>;
+  protected abstract handleNavigation(originalUrl?: string): void;
+  protected abstract getActionDesc(): string;
+
+  protected async doAuthenticate(
+    alias: string,
+    password: string,
+    rememberMe: boolean
+  ) {
+    this.doFailureReportFinallyOp(
+      async () => {
+        this.view.setIsLoading(true);
+        const [user, authToken] = await this.handleAuth(alias, password);
+        this.view.updateUserInfo(user, user, authToken, rememberMe);
+        this.handleNavigation();
+      },
+      this.getActionDesc(),
+      () => {
+        this.view.setIsLoading(false);
+      }
+    );
   }
 }
