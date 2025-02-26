@@ -10,11 +10,15 @@ export interface AppNavView extends View {
   clearLastInfoMessage: () => void;
 }
 export class AppNavPresenter extends Presenter<AppNavView> {
-  private userService: UserService;
+  private _userService: UserService;
 
   public constructor(view: AppNavView) {
     super(view);
-    this.userService = new UserService();
+    this._userService = new UserService();
+  }
+
+  public get userService(): UserService {
+    return this._userService;
   }
 
   public async logOut() {
