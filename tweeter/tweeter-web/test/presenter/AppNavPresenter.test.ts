@@ -35,4 +35,23 @@ describe("AppNavPresenter", () => {
     await appNavPresenter.logOut();
     verify(mockUserService.logout(mockAuthToken)).once();
   });
+
+  it("clears the last info message / user info and navigates to login page upon logout", async () => {
+    await appNavPresenter.logOut();
+    verify(mockAppNavView.clearLastInfoMessage()).once();
+    verify(mockAppNavView.clearUserInfo()).once();
+  });
+
+  it("displays an error message and does not clear info when logout fails", async () => {
+    const error = new Error("Mock error");
+    when(mockUserService.logout(mockAuthToken)).thenThrow(error);
+    await appNavPresenter.logOut();
+    verify(mockAppNavView.clearLastInfoMessage()).never();
+    verify(mockAppNavView.clearUserInfo()).never();
+    verify(
+      mockAppNavView.displayErrorMessage(
+        "Failed to log user out because of exception: Error: Mock error"
+      )
+    ).once();
+  });
 });
