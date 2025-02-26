@@ -4,15 +4,13 @@ import useToastListener from "../toaster/ToastListenerHook";
 import InfiniteScroll from "react-infinite-scroll-component";
 import StatusItem from "../statusItem/StatusItem";
 import useUserInfo from "../userInfo/UserInfoHook";
-import {
-  StatusItemPresenter,
-  StatusItemView,
-} from "../../presenter/StatusItemPresenter";
+import { StatusItemPresenter } from "../../presenter/StatusItemPresenter";
+import { PagedView } from "../../presenter/PagedPresenter";
 
 export const PAGE_SIZE = 10;
 
 interface StatusItemScrollerInterface {
-  presenterGenerator: (view: StatusItemView) => StatusItemPresenter;
+  presenterGenerator: (view: PagedView<Status>) => StatusItemPresenter;
 }
 
 const StatusItemScroller = ({
@@ -25,7 +23,7 @@ const StatusItemScroller = ({
 
   const { displayedUser, authToken } = useUserInfo();
 
-  const listener: StatusItemView = {
+  const listener: PagedView<Status> = {
     addItems: (newItems: Status[]) => setNewItems(newItems),
     displayErrorMessage: displayErrorMessage,
   };
