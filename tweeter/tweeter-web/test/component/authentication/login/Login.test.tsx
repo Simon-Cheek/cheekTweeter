@@ -57,7 +57,7 @@ describe("Login component", () => {
     await user.type(passwordField, password);
 
     await user.click(signInButton);
-    await new Promise((resolve) => setTimeout(resolve, 100)); // Tests are flaky without slight delay
+    await new Promise((resolve) => setTimeout(resolve, 10)); // Tests are flaky without slight delay
 
     verify(mockPresenter.doLogin(alias, password, false, originalUrl)).once();
   });

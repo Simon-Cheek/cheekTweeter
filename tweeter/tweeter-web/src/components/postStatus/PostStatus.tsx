@@ -7,7 +7,7 @@ import {
   PostStatusView,
 } from "../../presenter/PostStatusPresenter";
 
-const PostStatus = () => {
+const PostStatus = ({ pres }: { pres?: PostStatusPresenter }) => {
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
     useToastListener();
 
@@ -29,7 +29,7 @@ const PostStatus = () => {
     setPost,
   };
 
-  const [presenter] = useState(new PostStatusPresenter(listener));
+  const [presenter] = useState(pres ?? new PostStatusPresenter(listener));
 
   const submitPost = async (event: React.MouseEvent) => {
     event.preventDefault();
