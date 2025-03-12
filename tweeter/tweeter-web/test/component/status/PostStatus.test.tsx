@@ -1,12 +1,10 @@
 import { MemoryRouter } from "react-router-dom";
-import Login from "../../../src/components/authentication/login/Login";
 import { render, screen } from "@testing-library/react";
 import React from "react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
-import { LoginPresenter } from "../../../src/presenter/LoginPresenter";
 import PostStatus from "../../../src/components/postStatus/PostStatus";
 import { instance, mock, verify, when } from "@typestrong/ts-mockito";
 import { PostStatusPresenter } from "../../../src/presenter/PostStatusPresenter";
@@ -58,6 +56,12 @@ describe("Login component", () => {
     expect(postButton).toBeEnabled();
     expect(clearButton).toBeEnabled();
     await user.clear(textArea);
+    expect(postButton).toBeDisabled();
+    expect(clearButton).toBeDisabled();
+    await user.type(textArea, "a");
+    expect(postButton).toBeEnabled();
+    expect(clearButton).toBeEnabled();
+    await user.click(clearButton);
     expect(postButton).toBeDisabled();
     expect(clearButton).toBeDisabled();
   });
