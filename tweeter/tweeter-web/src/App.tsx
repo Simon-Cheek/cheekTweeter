@@ -14,11 +14,11 @@ import UserItemScroller from "./components/mainLayout/UserItemScroller";
 import useUserInfo from "./components/userInfo/UserInfoHook";
 import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
 import { FolloweePresenter } from "./presenter/FolloweePresenter";
-import { UserItemView } from "./presenter/UserItemPresenter";
 import { FollowerPresenter } from "./presenter/FollowerPresenter";
 import { StoryPresenter } from "./presenter/StoryPresenter";
-import { StatusItemView } from "./presenter/StatusItemPresenter";
 import { FeedPresenter } from "./presenter/FeedPresenter";
+import { PagedView } from "./presenter/PagedPresenter";
+import { Status, User } from "tweeter-shared";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
@@ -50,7 +50,7 @@ const AuthenticatedRoutes = () => {
           path="feed"
           element={
             <StatusItemScroller
-              presenterGenerator={(view: StatusItemView) =>
+              presenterGenerator={(view: PagedView<Status>) =>
                 new FeedPresenter(view)
               }
             />
@@ -60,7 +60,7 @@ const AuthenticatedRoutes = () => {
           path="story"
           element={
             <StatusItemScroller
-              presenterGenerator={(view: StatusItemView) =>
+              presenterGenerator={(view: PagedView<Status>) =>
                 new StoryPresenter(view)
               }
             />
@@ -71,7 +71,7 @@ const AuthenticatedRoutes = () => {
           element={
             <UserItemScroller
               key={1}
-              presenterGenerator={(view: UserItemView) =>
+              presenterGenerator={(view: PagedView<User>) =>
                 new FolloweePresenter(view)
               }
             />
@@ -82,7 +82,7 @@ const AuthenticatedRoutes = () => {
           element={
             <UserItemScroller
               key={2}
-              presenterGenerator={(view: UserItemView) =>
+              presenterGenerator={(view: PagedView<User>) =>
                 new FollowerPresenter(view)
               }
             />
