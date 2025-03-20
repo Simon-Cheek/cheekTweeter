@@ -1,3 +1,4 @@
+import { StatusDto } from "../dto/StatusDto";
 import { PostSegment, Type } from "./PostSegment";
 import { User } from "./User";
 import { format } from "date-fns";
@@ -273,5 +274,20 @@ export class Status {
 
   public toJson(): string {
     return JSON.stringify(this);
+  }
+
+  public get dto(): StatusDto {
+    return {
+      post: this._post,
+      timestamp: this._timestamp,
+      user: this._user.toJson(),
+    };
+  }
+
+  public static fromDto(dto: StatusDto | null): Status | null {
+    const newUser: User | null = User.fromJson(dto?.user);
+    return dto === null || newUser === null
+      ? null
+      : new Status(dto.post, newUser, dto.timestamp);
   }
 }
