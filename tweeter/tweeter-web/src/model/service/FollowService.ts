@@ -16,12 +16,12 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    // TODO: Replace with the result of calling server
+    const lastItemDto: UserDto | null = lastItem?.dto || null;
     const req: PagedUserItemRequest = {
       token: authToken.token,
       userAlias: userAlias,
       pageSize: pageSize,
-      lastItem: lastItem,
+      lastItem: lastItemDto,
     };
     return await this.serverFacade.getMoreFollowers(req);
   }
@@ -32,12 +32,12 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    // TODO: Replace with the result of calling server
+    const lastItemDto: UserDto | null = lastItem?.dto || null;
     const req: PagedUserItemRequest = {
       token: authToken.token,
       userAlias: userAlias,
       pageSize: pageSize,
-      lastItem: lastItem,
+      lastItem: lastItemDto,
     };
     return await this.serverFacade.getMoreFollowees(req);
   }
