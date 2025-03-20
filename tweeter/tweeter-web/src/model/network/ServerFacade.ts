@@ -3,7 +3,9 @@ import {
   PagedStatusItemResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  PostStatusRequest,
   Status,
+  TweeterResponse,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -11,7 +13,7 @@ import { ClientCommunicator } from "./ClientCommunicator";
 
 export class ServerFacade {
   private SERVER_URL =
-    "https://rygy5ml9j0.execute-api.us-east-1.amazonaws.com/V5";
+    "https://rygy5ml9j0.execute-api.us-east-1.amazonaws.com/V6";
 
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
@@ -116,6 +118,21 @@ export class ServerFacade {
       } else {
         return [items, response.hasMore];
       }
+    } else {
+      console.error(response);
+      throw new Error(response.message ? response.message : "");
+    }
+  }
+
+  public async postStatus(request: PostStatusRequest): Promise<void> {
+    const response = await this.clientCommunicator.doPost<
+      PostStatusRequest,
+      TweeterResponse
+    >(request, "/post-status");
+
+    // Handle errors
+    if (response.success) {
+      return;
     } else {
       console.error(response);
       throw new Error(response.message ? response.message : "");
