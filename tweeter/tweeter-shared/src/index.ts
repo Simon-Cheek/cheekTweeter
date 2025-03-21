@@ -15,9 +15,12 @@ export type { UserDto } from "./model/dto/UserDto";
 export type { PagedUserItemRequest } from "./net/request/PagedUserItemRequest";
 export type { PagedStatusItemRequest } from "./net/request/PagedStatusItemRequest";
 export type { PostStatusRequest } from "./net/request/PostStatusRequest";
+export type { LogoutRequest } from "./net/request/LogoutRequest";
+export type { GetUserRequest } from "./net/request/GetUserRequest";
 export type { TweeterRequest } from "./net/request/TweeterRequest";
 
 // Responses
 export type { PagedUserItemResponse } from "./net/response/PagedUserItemResponse";
 export type { PagedStatusItemResponse } from "./net/response/PagedStatusItemResponse";
+export type { GetUserResponse } from "./net/response/GetUserResponse";
 export type { TweeterResponse } from "./net/response/TweeterResponse";
