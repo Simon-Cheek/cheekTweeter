@@ -1,4 +1,7 @@
 import {
+  GetUserRequest,
+  GetUserResponse,
+  LogoutRequest,
   PagedStatusItemRequest,
   PagedStatusItemResponse,
   PagedUserItemRequest,
@@ -13,7 +16,7 @@ import { ClientCommunicator } from "./ClientCommunicator";
 
 export class ServerFacade {
   private SERVER_URL =
-    "https://rygy5ml9j0.execute-api.us-east-1.amazonaws.com/V6";
+    "https://rygy5ml9j0.execute-api.us-east-1.amazonaws.com/V7";
 
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
@@ -133,6 +136,36 @@ export class ServerFacade {
     // Handle errors
     if (response.success) {
       return;
+    } else {
+      console.error(response);
+      throw new Error(response.message ? response.message : "");
+    }
+  }
+
+  public async logoutUser(request: LogoutRequest): Promise<void> {
+    const response = await this.clientCommunicator.doPost<
+      LogoutRequest,
+      TweeterResponse
+    >(request, "/post-status");
+    // Handle errors
+    if (response.success) {
+      return;
+    } else {
+      console.error(response);
+      throw new Error(response.message ? response.message : "");
+    }
+  }
+
+  public async getUser(request: GetUserRequest): Promise<User | null> {
+    const response = await this.clientCommunicator.doPost<
+      GetUserRequest,
+      GetUserResponse
+    >(request, "/post-status");
+    // Handle errors
+    if (response.success) {
+      const dto: UserDto | null = response.user;
+      const user: User | null = User.fromDto(dto);
+      return user;
     } else {
       console.error(response);
       throw new Error(response.message ? response.message : "");
