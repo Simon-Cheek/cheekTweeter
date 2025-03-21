@@ -17,10 +17,14 @@ export type { PagedStatusItemRequest } from "./net/request/PagedStatusItemReques
 export type { PostStatusRequest } from "./net/request/PostStatusRequest";
 export type { LogoutRequest } from "./net/request/LogoutRequest";
 export type { GetUserRequest } from "./net/request/GetUserRequest";
+export type { GetCountRequest } from "./net/request/GetCountRequest";
+export type { GetFollowerStatusRequest } from "./net/request/GetFollowerStatusRequest";
 export type { TweeterRequest } from "./net/request/TweeterRequest";
 
 // Responses
 export type { PagedUserItemResponse } from "./net/response/PagedUserItemResponse";
 export type { PagedStatusItemResponse } from "./net/response/PagedStatusItemResponse";
 export type { GetUserResponse } from "./net/response/GetUserResponse";
+export type { GetCountResponse } from "./net/response/GetCountResponse";
+export type { GetFollowerStatusResponse } from "./net/response/GetFollowerStatusResponse";
 export type { TweeterResponse } from "./net/response/TweeterResponse";

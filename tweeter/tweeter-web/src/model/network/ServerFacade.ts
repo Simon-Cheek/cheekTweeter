@@ -1,4 +1,8 @@
 import {
+  GetCountRequest,
+  GetCountResponse,
+  GetFollowerStatusRequest,
+  GetFollowerStatusResponse,
   GetUserRequest,
   GetUserResponse,
   LogoutRequest,
@@ -16,7 +20,7 @@ import { ClientCommunicator } from "./ClientCommunicator";
 
 export class ServerFacade {
   private SERVER_URL =
-    "https://rygy5ml9j0.execute-api.us-east-1.amazonaws.com/V7";
+    "https://rygy5ml9j0.execute-api.us-east-1.amazonaws.com/V8";
 
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
@@ -146,7 +150,7 @@ export class ServerFacade {
     const response = await this.clientCommunicator.doPost<
       LogoutRequest,
       TweeterResponse
-    >(request, "/post-status");
+    >(request, "/logout");
     // Handle errors
     if (response.success) {
       return;
@@ -160,12 +164,56 @@ export class ServerFacade {
     const response = await this.clientCommunicator.doPost<
       GetUserRequest,
       GetUserResponse
-    >(request, "/post-status");
+    >(request, "/get-user");
     // Handle errors
     if (response.success) {
       const dto: UserDto | null = response.user;
       const user: User | null = User.fromDto(dto);
       return user;
+    } else {
+      console.error(response);
+      throw new Error(response.message ? response.message : "");
+    }
+  }
+
+  public async getFolloweeCount(request: GetCountRequest): Promise<number> {
+    const response = await this.clientCommunicator.doPost<
+      GetCountRequest,
+      GetCountResponse
+    >(request, "/get-followee-count");
+    // Handle errors
+    if (response.success) {
+      return response.count;
+    } else {
+      console.error(response);
+      throw new Error(response.message ? response.message : "");
+    }
+  }
+
+  public async getFollowerCount(request: GetCountRequest): Promise<number> {
+    const response = await this.clientCommunicator.doPost<
+      GetCountRequest,
+      GetCountResponse
+    >(request, "/get-follower-count");
+    // Handle errors
+    if (response.success) {
+      return response.count;
+    } else {
+      console.error(response);
+      throw new Error(response.message ? response.message : "");
+    }
+  }
+
+  public async getIsFollowerStatus(
+    request: GetFollowerStatusRequest
+  ): Promise<boolean> {
+    const response = await this.clientCommunicator.doPost<
+      GetFollowerStatusRequest,
+      GetFollowerStatusResponse
+    >(request, "/get-is-follower-status");
+    // Handle errors
+    if (response.success) {
+      return response.isFollower;
     } else {
       console.error(response);
       throw new Error(response.message ? response.message : "");

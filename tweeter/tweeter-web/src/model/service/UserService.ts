@@ -5,6 +5,7 @@ import {
   GetUserRequest,
   LogoutRequest,
   User,
+  UserDto,
 } from "tweeter-shared";
 import { ServerFacade } from "../network/ServerFacade";
 
@@ -36,24 +37,36 @@ export class UserService {
     user: User,
     selectedUser: User
   ): Promise<boolean> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.isFollower();
+    const userDto: UserDto = user.dto;
+    const selectedUserDto: UserDto = selectedUser.dto;
+    const req = {
+      token: authToken.token,
+      user: userDto,
+      selectedUser: selectedUserDto,
+    };
+    return this.serverFacade.getIsFollowerStatus(req);
   }
 
   public async getFollowerCount(
     authToken: AuthToken,
     user: User
   ): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFollowerCount(user.alias);
+    const req = {
+      token: authToken.token,
+      user: user.dto,
+    };
+    return this.serverFacade.getFollowerCount(req);
   }
 
   public async getFolloweeCount(
     authToken: AuthToken,
     user: User
   ): Promise<number> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFolloweeCount(user.alias);
+    const req = {
+      token: authToken.token,
+      user: user.dto,
+    };
+    return this.serverFacade.getFolloweeCount(req);
   }
 
   public async follow(
