@@ -1,4 +1,6 @@
 import {
+  FollowRequest,
+  FollowResponse,
   GetCountRequest,
   GetCountResponse,
   GetFollowerStatusRequest,
@@ -20,7 +22,7 @@ import { ClientCommunicator } from "./ClientCommunicator";
 
 export class ServerFacade {
   private SERVER_URL =
-    "https://rygy5ml9j0.execute-api.us-east-1.amazonaws.com/V8";
+    "https://rygy5ml9j0.execute-api.us-east-1.amazonaws.com/V9";
 
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
@@ -214,6 +216,34 @@ export class ServerFacade {
     // Handle errors
     if (response.success) {
       return response.isFollower;
+    } else {
+      console.error(response);
+      throw new Error(response.message ? response.message : "");
+    }
+  }
+
+  public async follow(request: FollowRequest): Promise<[number, number]> {
+    const response = await this.clientCommunicator.doPost<
+      FollowRequest,
+      FollowResponse
+    >(request, "/follow");
+    // Handle errors
+    if (response.success) {
+      return [response.followerCount, response.followeeCount];
+    } else {
+      console.error(response);
+      throw new Error(response.message ? response.message : "");
+    }
+  }
+
+  public async unfollow(request: FollowRequest): Promise<[number, number]> {
+    const response = await this.clientCommunicator.doPost<
+      FollowRequest,
+      FollowResponse
+    >(request, "/unfollow");
+    // Handle errors
+    if (response.success) {
+      return [response.followerCount, response.followeeCount];
     } else {
       console.error(response);
       throw new Error(response.message ? response.message : "");
