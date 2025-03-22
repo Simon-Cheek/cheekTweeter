@@ -99,31 +99,41 @@ export class UserService {
     userImageBytes: Uint8Array,
     imageFileExtension: string
   ): Promise<[User, AuthToken]> {
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
     const imageStringBase64: string =
       Buffer.from(userImageBytes).toString("base64");
-
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
+    const req = {
+      firstName,
+      lastName,
+      alias,
+      password,
+      imageString: imageStringBase64,
+      imageFileExtension,
+    };
+    const [dto, token] = await this.serverFacade.register(req);
+    const user = User.fromDto(dto);
 
     if (user === null) {
       throw new Error("Invalid registration");
     }
-
-    return [user, FakeData.instance.authToken];
+    const auth = new AuthToken(token, Date.now());
+    return [user, auth];
   }
 
   public async login(
     alias: string,
     password: string
   ): Promise<[User, AuthToken]> {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
+    const req = {
+      alias,
+      password,
+    };
+    const [dto, token] = await this.serverFacade.login(req);
+    const user = User.fromDto(dto);
+    const auth = new AuthToken(token, Date.now());
 
     if (user === null) {
       throw new Error("Invalid alias or password");
     }
-
-    return [user, FakeData.instance.authToken];
+    return [user, auth];
   }
 }

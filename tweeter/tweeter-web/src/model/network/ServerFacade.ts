@@ -1,4 +1,5 @@
 import {
+  AuthResponse,
   FollowRequest,
   FollowResponse,
   GetCountRequest,
@@ -7,12 +8,14 @@ import {
   GetFollowerStatusResponse,
   GetUserRequest,
   GetUserResponse,
+  LoginRequest,
   LogoutRequest,
   PagedStatusItemRequest,
   PagedStatusItemResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
   PostStatusRequest,
+  RegisterRequest,
   Status,
   TweeterResponse,
   User,
@@ -22,7 +25,7 @@ import { ClientCommunicator } from "./ClientCommunicator";
 
 export class ServerFacade {
   private SERVER_URL =
-    "https://rygy5ml9j0.execute-api.us-east-1.amazonaws.com/V9";
+    "https://rygy5ml9j0.execute-api.us-east-1.amazonaws.com/V11";
 
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
@@ -244,6 +247,34 @@ export class ServerFacade {
     // Handle errors
     if (response.success) {
       return [response.followerCount, response.followeeCount];
+    } else {
+      console.error(response);
+      throw new Error(response.message ? response.message : "");
+    }
+  }
+
+  public async login(request: LoginRequest): Promise<[UserDto, string]> {
+    const response = await this.clientCommunicator.doPost<
+      LoginRequest,
+      AuthResponse
+    >(request, "/login");
+    // Handle errors
+    if (response.success) {
+      return [response.user, response.token];
+    } else {
+      console.error(response);
+      throw new Error(response.message ? response.message : "");
+    }
+  }
+
+  public async register(request: RegisterRequest): Promise<[UserDto, string]> {
+    const response = await this.clientCommunicator.doPost<
+      RegisterRequest,
+      AuthResponse
+    >(request, "/register");
+    // Handle errors
+    if (response.success) {
+      return [response.user, response.token];
     } else {
       console.error(response);
       throw new Error(response.message ? response.message : "");
